@@ -2,10 +2,13 @@ import praw
 import time
 from datetime import datetime
 import pandas as pd
+import numpy as np
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from collections import defaultdict, Counter
 import statistics as stats
+import language_check
+from joblib import load
 
 def fetch_comments_id(user, limit=1000):
     all_comments = list(user.comments.controversial(limit=limit))
@@ -76,57 +79,50 @@ def more_features(df):
   df['duplicate_comments'] = df['comments'].map(lambda x: len(x) - len(set(x)))
   return df
 
-if __name__ == "__main__":
+def cap_check(row):
+  caps = []
+  for comment in row:
+    if len(comment) == 0:
+      pass
+    else:
+      c = Counter("upper" if x.isupper() else "rest" for x in comment)
+      caps.append(c['upper']/(c['rest']+c['upper']))
+  return caps
 
+def grammar_check(row):
+  tool = language_check.LanguageTool('en-US')
+  errors = []
+  for comment in row:
+      errors.append(len(tool.check(comment.replace('\n', ' '))))
+  return (np.average(errors), np.sum(errors))
+
+def grammar_feats(df):
+  df['grammar'] = df['comments'].map(grammar_check)
+  df['cap_freq'] = df['comments'].map(cap_check)
+  df['avg_grammar'] = df['grammar'].map(lambda x: x[0])
+  df['total_grammar'] = df['grammar'].map(lambda x: x[1])
+  df['cap_freq_mean'] = df['cap_freq'].map(lambda x: np.mean(x))
+  return df
+
+def get_user_profile(user_input):
   reddit = praw.Reddit(user_agent='Comment History Parser',
                     client_id='nkVxbwp1RsHHCA',
                      client_secret='SlzWUhAhV5nIXPy4_1PTJSOaLrA')
-                     
-  sub_name = 'watchexchange'
+  user = reddit.redditor(user_input)
+  users = [user]
+  u = pd.DataFrame(users, columns=['users'])
+  u = populate_df(u)
+  u = add_features(u)
+  u = u.drop(columns = ['details','polarity'])
+  u = more_features(u)
+  u['comments_new'] = u['comments'].map(lambda x: " ".join(x))
+  u = grammar_feats(u)
+  return u
 
-  subreddit = reddit.subreddit(sub_name)
-  #extract as much users as possible in subreddit
-  #hot, new, controversial, rising
+if __name__ == "__main__":
 
-  #start by collecting all submissions in subreddit
+  user_input = input('Username Here: ')
+  u = get_user_profile(user_input)
 
-  submissions_id = []
-  for submission in reddit.subreddit(sub_name).hot(limit=1000):
-    if submission not in submissions_id:
-      submissions_id.append(submission)
-  for submission in reddit.subreddit(sub_name).rising(limit=1000):
-    if submission not in submissions_id:
-      submissions_id.append(submission)
-  for submission in reddit.subreddit(sub_name).controversial(limit=1000):
-    if submission not in submissions_id:
-      submissions_id.append(submission)
-  for submission in reddit.subreddit(sub_name).new(limit=1000):
-    if submission not in submissions_id:
-      submissions_id.append(submission)
-
-  #initial scrape, authors of submissions
-  users = []
-  for submission in submissions_id:
-    if submission.author not in users:
-      users.append(submission.author)
-  
-  #secondary scrape, iterate through submission comment forest and extract all users inside
-
-  for submission in submissions_id:
-    submission.comments.replace_more(limit=None)
-    for comment in submission.comments.list():
-        if comment.author not in users:
-            users.append(comment.author)
-
-  users.remove('AutoModerator')
-  
-  df = pd.DataFrame(users[500:], columns=['users'])
-  df = populate_df(df)
-  sid = SentimentIntensityAnalyzer()
-  df = add_features(df)
-  df = df.drop(columns = ['details','polarity'])
-  #maybe this will be useful later
-  no_comments = df[df.total_comments == 0]
-  df = df[df.total_comments != 0]
-  df = more_features(df)
-  df.to_csv('data/df_watchexchange_2.csv', index=False)
+  clf = load('watch_clf.joblib')
+  clf.predict(u)

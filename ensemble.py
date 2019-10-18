@@ -34,26 +34,38 @@ class ensemble:
         sublinear_tf=False)
         
         #instantiate classifiers for ensemble
-        rf = RandomForestClassifier(n_estimators = 100, n_jobs = -1, oob_score = True)
-        xgb = XGBClassifier()
-        lgb = LGBMClassifier()
+        self.rf = RandomForestClassifier(n_estimators = 100, n_jobs = -1, oob_score = True)
+        self.xgb = XGBClassifier()
+        self.lgb = LGBMClassifier()
         
         #creating ensemble classifier
-        self.eclf = VotingClassifier(estimators=[('xgb', xgb), ('lgb', lgb), ('rf', rf)], voting='soft')
+        self.eclf = VotingClassifier(estimators=[('xgb', self.xgb), ('lgb', self.lgb), ('rf', self.rf)], voting='soft')
 
         #create pipeline for vectorizing user's comments for Naive Bayes
         self.model = make_pipeline(tfidf, MultinomialNB())
 
+        #numerical columns to use for rf/gb models
+        self.num_cols = ['link_karma', 'comment_karma', 'verified', 'mod', 'gold',
+            'days_old', 'total_comments', 'positive', 'neutral',
+            'negative', 'mean_comment_length', 'mode_comment_length',
+            'median_comment_length', 'duplicate_comments',
+            'avg_grammar', 'total_grammar',
+            'cap_freq_mean']
+
     def split(self):
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y)
         self.X_train_MNB = self.X_train['comments_new']
-        self.X_train = self.X_train.drop(columns=['users','comments','comments_new', 'len_cs'])
+        self.X_train = self.X_train[self.num_cols]
         self.X_test_MNB = self.X_test['comments_new']
-        self.X_test = self.X_test.drop(columns=['users','comments', 'comments_new', 'len_cs'])
+        self.X_test = self.X_test[self.num_cols]
 
-    def fit(self):
+    def train_fit(self):
         self.eclf.fit(self.X_train, self.y_train)
         self.model.fit(self.X_train_MNB, self.y_train)
+
+    def fit(self):
+        self.eclf.fit(self.X[self.num_cols], self.y)
+        self.model.fit(self.X['comments_new'], self.y)
     
     def test_predict(self):
         y_pred = self.eclf.predict_proba(self.X_test)[:,1]
@@ -63,20 +75,35 @@ class ensemble:
 
     def predict(self, X):
         X_MNB = X['comments_new']
-        X = X.drop(columns=['users','comments','comments_new', 'len_cs'])
+        X = X[self.num_cols]
         y_pred = self.eclf.predict_proba(X)[:,1]
         y_pred_MNB = self.model.predict_proba(X_MNB)[:,1]
         y_final_pred = (y_pred+y_pred_MNB/2)
         return y_final_pred
         
+    def rf_predict(self, X):
+        self.rf.fit(self.X_train, self.y_train)
+        X = X[self.num_cols]
+        return self.rf.predict_proba(X)[:,1]
+
+    def xgb_predict(self, X):
+        self.xgb.fit(self.X_train, self.y_train)
+        X = X[self.num_cols]
+        return self.xgb.predict_proba(X)[:,1]
+
+    def lgb_predict(self, X):
+        self.lgb.fit(self.X_train, self.y_train)
+        X = X[self.num_cols]
+        return self.lgb.predict_proba(X)[:,1]
+
+    def MNB_predict(self, X):
+        self.model.fit(self.X_train_MNB, self.y_train)
+        X = X['comments_new']
+        return self.model.predict_proba(X)[:,1]
+
+    def score(self):
+        print(f'''ROC AUC score: {roc_auc_score(self.y_test, self.test_predict())}''')
+
 if __name__ == "__main__":
-    banned = pd.read_csv('data/ban_df.csv', converters={'comments': eval})
-    subs = pd.read_csv('data/merged.csv', converters={'comments': eval}, index_col= 'Unnamed: 0')
-    banned['is_scammer'] = True
-    subs['is_scammer'] = False
-
-    df = pd.concat([banned,subs], ignore_index=True)
-    df['comments_new'] = df['comments'].map(lambda x: " ".join(x))
-
-    # predicted = pred >= .5
-    # mat = confusion_matrix(e.y_test, predicted)
+    df = pd.read_pickle('merged_grammar.pkl')
+    e = ensemble(df)
