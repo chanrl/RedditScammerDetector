@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Reddit Scammer Detector</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <style>
+      #title{
+        font-size: 24px;
+        color: blue;
+        font-weight: bold;
+      }
+      #myDIV {
+        display: none;
+        color: orangered;
+      }
+    </style>
+</head>
+<script>
+    function myFunction() {
+        var text1 = $("#text1").val();
+        var text2 = $("#text2").val();
+
+        // what i inserted
+
+        var x = document.getElementById("myDIV");
+        x.style.display = "block";
+
+        $.ajax({
+            url: "/join",
+            type: "POST",
+            data: { text1: text1, text2: text2 }
+        }).done(function(response) {
+            var html = "<br><br><br><p> <b> RESULT : <b><p>";
+            response = response.result;
+            $.each(response, function(key, val) {
+                console.log(val);
+                html += "<p>" + val + "<p>";
+            });
+            html += "<br>";
+            $(".show-data").append(html);
+        });
+    }
+</script>
+<body>
+  <p id="title">Reddit Scammer Detector</p><br />
+  <p>Input Reddit Username:</p>
+  <input type="text" id="text1" name="text1" /><br /><br />
+  <button id="clicked" onclick="myFunction()">Submit</button>
+  <p></p>
+
+  <div id="myDIV">
+      Please wait while user's Reddit profile and comment history is being
+      scraped and fitted. This may take up to 1 minute.
+  </div>
+
+  <div class="show-data"></div>
+</body>
+</html>
