@@ -2,7 +2,7 @@
 
 Flask app for a Reddit scammer detector. Input a Reddit username to return a probability of that user being a scammer.
 
-# Summary
+## Summary
 
 Check out my [Medium post](https://medium.com/p/1bdc024c8d69/) for a detailed analysis of my investigation and findings!
 Initial results showed promise, but model accuracy needs to increase before public use.
