@@ -1,9 +1,11 @@
-# To-Catch-a-Scammer
+# RedditScammerDetector
+
+Flask app for a Reddit Scammer Detector
 
 # Summary
 
-Flask app for a Reddit scammer detector. Initial results showed promise, but still requires more work before public use. 
 Check out my [Medium post](https://medium.com/p/1bdc024c8d69/) for a detailed analysis of my investigation and findings!
+Initial results showed promise, but model accuracy needs to increase before public use.
 
 ## Directory
 
