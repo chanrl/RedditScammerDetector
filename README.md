@@ -1,6 +1,6 @@
 # RedditScammerDetector
 
-Flask app for a Reddit Scammer Detector
+Flask app for a Reddit scammer detector. Input a Reddit username to return a probability of that user being a scammer.
 
 # Summary
 
