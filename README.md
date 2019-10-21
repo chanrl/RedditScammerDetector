@@ -25,4 +25,5 @@ Initial results showed promise, but model accuracy needs to increase before publ
 ## Files to Download
 
 * Pre-trained models for Flask app
+  * csv files for model to train on and pickled models are too large for github 
   * Link from S3 bucket to be included later
