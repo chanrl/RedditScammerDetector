@@ -8,6 +8,9 @@ from collections import defaultdict, Counter
 import statistics as stats
 
 def fetch_comments_id(user, limit=1000):
+    '''
+    Returns user's comment history, potential max of 3000, as a list of comment objects
+    '''
     all_comments = list(user.comments.controversial(limit=limit))
     for comment in user.comments.hot(limit=limit):
         if comment not in all_comments:
@@ -18,15 +21,22 @@ def fetch_comments_id(user, limit=1000):
     return all_comments
 
 def retrieve_text(user, limit=1000):
+  '''
+  Converts all comment objects into string text, as a list of documents
+  '''
   all_text = [comment.body for comment in fetch_comments_id(user, limit=limit)]
   return all_text
 
 def get_user_details(user):
+  '''
+  Fetches all other information available on a user's profile with PRAW
+  Link karma, comment karma, verified, mod status, gold status, account age
+  '''
   #self-explanatory
   try:
-    link_karma = user.link_karma
+    link_karma = user.link_karma #if user is banned and profile is unaccessible, it will raise an error when fetching link_karma.
   except:
-    return -1
+    return -1 #set as -1 to filter out later
   comment_karma = user.comment_karma
   verified = user.has_verified_email
   mod = user.is_mod
@@ -35,6 +45,9 @@ def get_user_details(user):
   return link_karma, comment_karma, verified, mod, gold, days_old
 
 def populate_df(df):
+    '''
+    Organizing mined data into dataframe
+    '''
     df['details'] = df['users'].map(get_user_details)
     df = df[df['details'] != -1]
     df['link_karma'] = df['details'].map(lambda x : x[0])
@@ -46,6 +59,9 @@ def populate_df(df):
     return df
 
 def apply_vader(comments):
+    '''
+    Adding feature for comment sentiment
+    '''
     sid = SentimentIntensityAnalyzer()
     scores = defaultdict(int)
     for comment in comments:
@@ -60,6 +76,9 @@ def apply_vader(comments):
     return scores
 
 def add_features(df):
+  '''
+  Organizing more information into dataframe
+  '''
   df['comments'] = df['users'].map(retrieve_text)
   df['total_comments'] = df.comments.map(lambda x: len(x))
   df['polarity'] = df['comments'].map(apply_vader)
@@ -69,6 +88,9 @@ def add_features(df):
   return df
 
 def more_features(df):
+  '''
+  Adding more features for models to train on
+  '''
   df['len_cs'] = df['comments'].map(lambda x: [len(comment) for comment in x])
   df['mean_comment_length'] = df['len_cs'].map(lambda x: stats.mean(x))
   df['mode_comment_length'] = df['len_cs'].map(lambda x: Counter(x).most_common()[0][0])
@@ -129,4 +151,4 @@ if __name__ == "__main__":
   no_comments = df[df.total_comments == 0]
   df = df[df.total_comments != 0]
   df = more_features(df)
-  df.to_csv('data/df_watchexchange_2.csv', index=False)
+  # df.to_csv('data/df_watchexchange_2.csv', index=False)
