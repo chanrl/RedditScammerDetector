@@ -19,9 +19,7 @@
 <script>
     function myFunction() {
         var text1 = $("#text1").val();
-        var text2 = $("#text2").val();
-
-        // what i inserted
+        // var text2 = $("#text2").val();
 
         var x = document.getElementById("myDIV");
         x.style.display = "block";
@@ -29,7 +27,8 @@
         $.ajax({
             url: "/join",
             type: "POST",
-            data: { text1: text1, text2: text2 }
+            // data: { text1: text1, text2: text2 }
+            data: { text1: text1}
         }).done(function(response) {
             var html = "<br><br><br><p> <b> RESULT : <b><p>";
             response = response.result;

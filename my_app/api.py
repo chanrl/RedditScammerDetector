@@ -9,14 +9,15 @@ app = Flask(__name__)
 eclf = load('eclf.pkl')
 
 def do_something(text1):
-   user_data = get_user_profile(str(text1))
-   proba = eclf.predict(user_data)
+#takes input data from the web form and passes it into the trained ensemble classifier
+
+   proba = eclf.predict(str(text1))
    
    return str(round(proba[0],3))
 
 @app.route('/')
 def home():
-    return render_template('new.html')
+    return render_template('home.html')
 
 @app.route('/join', methods=['GET','POST'])
 def my_form_post():
