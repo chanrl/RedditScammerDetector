@@ -19,7 +19,7 @@ Initial results showed promise, but model accuracy needs to increase before publ
   * A summarized and organized jupyter notebook file of the week's work
 
 * **reddit.py**
-  * Python script to scrape a subreddit for Reddit usernames, profile information, and comment history
+  * Python script for scraping a subreddit for Reddit usernames, profile information, and comment history
 
 * **jupyter/** 
   * Unorganized jupyter notebook files used during EDA and model training
