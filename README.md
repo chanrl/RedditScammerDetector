@@ -1,26 +1,3 @@
-<<<<<<< HEAD
-# To-Catch-a-Scammer
-
-# Summary
-
-Flask app for a Reddit scammer detector. Initial results showed promise, but still requires more work before public use. 
-Check out my [Medium Post](https://medium.com/p/1bdc024c8d69/) for a detailed summary of my investigation and findings!
-
-## Directory
-
-* *my_app/* 
-  * Python scripts to scrape user's profile and predict scammer probability
-  * Flask app for the Scammer Detector
-
-* *presentation.ipynb* 
-  * A summarized and organized jupyter notebook file of the week's work
-
-* *reddit.py*
-  * Python script to scrape a subreddit for Reddit usernames, profile information, and comment history
-
-* *jupyter/* 
-  * Unorganized jupyter notebook files used during EDA and model training
-=======
 # RedditScammerDetector
 
 Flask app for a Reddit scammer detector. Input a Reddit username to return a probability of that user being a scammer.
@@ -53,4 +30,3 @@ Initial results showed promise, but model accuracy needs to increase before publ
 |------------|-------------|
 |**[watchex]()** | Model trained with r/watchexchange users + [USL](universalscammerlist.com) banned users |
 |**[all]()**     | Model trained with 50 users from all 60+ subreddits participating in USL |
->>>>>>> dda9ac736f2af7fba6ea3676de980ae5e3a1571a
