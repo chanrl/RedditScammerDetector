@@ -28,5 +28,5 @@ Initial results showed promise, but model accuracy needs to increase before publ
 
 | Model      | Description |
 |------------|-------------|
-|[watchex]() | Model trained with r/watchexchange users + [USL](universalscammerlist.com) banned users |
-|[all]()     | Model trained with 50 users from all 60+ subreddits participating in USL |
+|**[watchex]()** | Model trained with r/watchexchange users + [USL](universalscammerlist.com) banned users |
+|**[all]()**     | Model trained with 50 users from all 60+ subreddits participating in USL |
