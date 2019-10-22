@@ -4,7 +4,7 @@ Flask app for a Reddit scammer detector. Input a Reddit username to return a pro
 
 ## Summary
 
-Check out my [Medium post](https://medium.com/p/1bdc024c8d69/) for a detailed analysis of my investigation and findings!
+Check out my [Medium post IN PROGRESS](https://medium.com/p/1bdc024c8d69/) for a detailed analysis of my investigation and findings!
 Initial results showed promise, but model accuracy needs to increase before public use.
 
 ## Directory
@@ -22,8 +22,9 @@ Initial results showed promise, but model accuracy needs to increase before publ
 * *jupyter/* 
   * Unorganized jupyter notebook files used during EDA and model training
 
-## Files to Download
+## Models to Load into Flask App
 
-* Pre-trained models for Flask app
-  * csv files for model to train on and pickled models are too large for github 
-  * Link from S3 bucket to be included later
+| Model      | Description |
+|------------|-------------|
+|[watchex]() | Model trained with watchexchange users + [USL](universalscammerlist.com) banned users |
+|[all]()     | Model trained with 50 users from all subreddits participating in USL|
