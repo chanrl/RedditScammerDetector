@@ -9,19 +9,19 @@ Initial results showed promise, but model accuracy needs to increase before publ
 
 ## Directory
 
-* *my_app/* 
+* **my_app/** 
   * Python scripts to scrape user's profile and predict scammer probability
    * ensemble.py - Class object to load dataframe into and can train/test split df; voting classifier ready for use (models used include XGBoost, LightGBM, Random Forest, Multinomial Naive Bayes)
    * user.py - Collects and processes data for ensemble.py to predict on
   * Flask app for the Scammer Detector
 
-* *presentation.ipynb* 
+* **presentation.ipynb* 
   * A summarized and organized jupyter notebook file of the week's work
 
-* *reddit.py*
+* **reddit.py*
   * Python script to scrape a subreddit for Reddit usernames, profile information, and comment history
 
-* *jupyter/* 
+* **jupyter/* 
   * Unorganized jupyter notebook files used during EDA and model training
 
 ## Models to Load into Flask App
