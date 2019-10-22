@@ -11,6 +11,8 @@ Initial results showed promise, but model accuracy needs to increase before publ
 
 * *my_app/* 
   * Python scripts to scrape user's profile and predict scammer probability
+   * ensemble.py - Class object to load dataframe into and can train/test split df, voting classifier ready for use (models used include XGBoost, LightGBM, Random Forest, Multinomial Naive Bayes)
+   * user.py - Collects and processes data for ensemble.py to predict on
   * Flask app for the Scammer Detector
 
 * *presentation.ipynb* 
@@ -26,5 +28,5 @@ Initial results showed promise, but model accuracy needs to increase before publ
 
 | Model      | Description |
 |------------|-------------|
-|[watchex]() | Model trained with watchexchange users + [USL](universalscammerlist.com) banned users |
-|[all]()     | Model trained with 50 users from all subreddits participating in USL|
+|[watchex]() | Model trained with r/watchexchange users + [USL](universalscammerlist.com) banned users |
+|[all]()     | Model trained with 50 users from all 60+ subreddits participating in USL |
