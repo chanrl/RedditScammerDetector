@@ -20,7 +20,7 @@ After adding more users from all buy/sell/trade subreddits, the model classifica
 * **my_app/** 
   * api.py: Flask app for the Redditor Scammer Detector
   * ensemble.py - Includes class object that can load dataframe of processed Reddit user information into and can train/test split df; voting classifier ready for use (models used include XGBoost, LightGBM, Random Forest, Multinomial Naive Bayes)
-  * user.py - Collects and processes data for ensemble.py to predict on
+  * user.py - Collects and processes Reddit user data for ensemble.py to predict on
 
 * **jupyter/** 
   * Unorganized jupyter notebook files used during EDA and model training
