@@ -9,9 +9,7 @@ On Reddit, there are over 60 subreddits for buy/sell/trade, and for each subredd
 
 ## Summary
 
-Check out my [Medium post IN PROGRESS](https://medium.com/p/1bdc024c8d69/) for a detailed analysis of my investigation and findings!
-
-TL;DR: Initial training and validation set using only users from watchexchange and banned users from USL yielded great results. Naive bayes was able to identify scammers alone on certain keywords with an accuracy of 90% and recall of 95%. Ensemble model of Naive Bayes with XGBoost, LightGBM, and Random Forest was able to increase the ROC AUC score to .96 and increase accuracy and recall to 96%. Negative comment sentiment was identified as an important feature in the initial training set.
+Initial training and validation set using only users from watchexchange and banned users from USL yielded great results. Naive bayes was able to identify scammers alone on certain keywords with an accuracy of 90% and recall of 95%. Ensemble model of Naive Bayes with XGBoost, LightGBM, and Random Forest was able to increase the ROC AUC score to .96 and increase accuracy and recall to 96%. Negative comment sentiment was identified as an important feature in the initial training set.
 
 After adding more users from all buy/sell/trade subreddits, the model classification accuracy decreased and negative comment sentiment was reduced from being an important feature. As only unbanned users are being classified as non-scammers, there is a chance that there are scammers being mixed into the non-scammer pool. P-value still shows that banned users still have increased negative sentiment compared to regular users, but not enough to identify scammers by their comment vocabulary. Negative comment sentiment can still be expanded on, as a true toxic comment is currently grouped in the same category as a comment showing disagreement. Lots of tuning can still be done to this baseline classification model to improve accuracy. 
 
